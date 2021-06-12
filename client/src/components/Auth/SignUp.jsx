@@ -1,7 +1,8 @@
 import React from "react";
 import { Mutation } from "react-apollo";
 
-import FormInput from "../form-input/FormInput.component";
+import FormInput from "../FormInput/FormInput.component";
+import CustomButton from "../CustomButton/CustomButton.component";
 import Error from "../Error";
 import { SIGNUP_USER } from "../../queries/index";
 
@@ -85,13 +86,13 @@ class SignUp extends React.Component {
                   value={passwordConfirmation}
                   onChange={this.handleChange}
                 />
-                <button
+                <CustomButton
                   type="submit"
                   disabled={loading || this.validateForm()}
                   className="button-primary"
                 >
-                  Submit
-                </button>
+                  sign up
+                </CustomButton>
                 {error && <Error error={error} />}
               </form>
             );

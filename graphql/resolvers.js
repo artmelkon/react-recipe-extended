@@ -39,16 +39,19 @@ exports.resolvers = {
     },
 
     signupUser: async (root, { username, email, password }, { User }) => {
-      const user = await User.findOne({username});
-      if(user) throw new Error('User already exists');
+      const userExists = await User.findOne({username});
+      if(userExists) throw new Error('User already exists');
 
-      const newUser = await new User({
+      const user = await new User({
         username,
         email,
         password
-      }).save();
+      })
+      user.password = await bcrypt.hash(user.password, 10);
       
-      return { token: createToken(newUser, process.env.TOKEN_SECRET, "1hr")};
+      user.save();
+      
+      return { token: createToken(user, process.env.TOKEN_SECRET, "1hr")};
     }
   }
   
