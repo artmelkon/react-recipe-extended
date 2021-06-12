@@ -21,12 +21,13 @@ exports.typeDefs = gql`
     favorites: [Recipe]
   }
 
-  type RootQuery {
-    getAllRecipes: [Recipe]
-  }
-
   type Token {
     token: String!
+  }
+
+  type RootQuery {
+    getAllRecipes: [Recipe]
+    signinUser(username: String!, password: String!): Token
   }
 
   type RootMutation {
@@ -37,7 +38,6 @@ exports.typeDefs = gql`
       instructions: String!
       username: String
     ): Recipe
-
     signupUser(username: String!, email: String!, password: String!): Token
   }
 

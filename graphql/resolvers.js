@@ -1,4 +1,4 @@
-// const { Token } = require('graphql');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 require('dotenv').config({ path: './env/.env'});
@@ -14,6 +14,15 @@ exports.resolvers = {
       const allRecipes = await Recipe.find();
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
       return allRecipes;
+    },
+    signinUser: async (root, { username, password }, { User }) => {
+      const user = await User.findOne({ username });
+      if(!user) throw new Error('User not found!');
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if(!isValidPassword) throw new Error('Invalid Password');
+
+      return { token: createToken(user, process.env.TOKEN_SECRET, "1hr")};
     }
   },
   RootMutation: {

@@ -1,41 +1,62 @@
 import React from "react";
-import { Mutation } from 'react-apollo';
+import { Mutation } from "react-apollo";
 
 import FormInput from "../form-input/FormInput.component";
-import Error from '../Error'
-import { SIGNUP_USER } from '../../queries/index';
+import Error from "../Error";
+import { SIGNUP_USER } from "../../queries/index";
+
+const initialState = {
+  username: "",
+  email: "",
+  password: "",
+  passwordConfirmation: "",
+};
 
 class SignUp extends React.Component {
-  state = {
-    username: "",
-    email: "",
-    password: "",
-    passwordConfirmation: "",
+  state = { ...initialState };
+
+  clearState = () => {
+    this.setState({ ...initialState });
   };
 
-  handleChange = event => {
+  handleChange = (event) => {
     const { name, value } = event.target;
     this.setState({ [name]: value });
   };
 
-  // handleSubmit = (event, signupUser) => {
-  //   event.preventDefault();
+  handleSubmit = async (event, signupUser) => {
+    event.preventDefault();
 
-  //   signupUser().then(data => console.log(data))
-  // }
+    const data = signupUser();
+    await console.log(data);
+    this.clearState();
+  };
+
+  validateForm = () => {
+    const { username, email, password, passwordConfirmation } = this.state;
+    const isInvalid =
+      !username ||
+      !email ||
+      !password ||
+      password !== passwordConfirmation;
+    return isInvalid;
+  };
 
   render() {
     const { username, email, password, passwordConfirmation } = this.state;
     return (
       <div className="App">
         <h2 className="App">Signup</h2>
-        <Mutation mutation={SIGNUP_USER} variables={{ username, email, password }}>
-          {(signupUser, { data, loading, error}) => {
+        <Mutation
+          mutation={SIGNUP_USER}
+          variables={{ username, email, password }}
+        >
+          {(signupUser, { data, loading, error }) => {
             return (
-              <form className="form" onSubmit={event => {
-                event.preventDefault();
-                signupUser().then(data => console.log(data))
-              }}>
+              <form
+                className="form"
+                onSubmit={(event) => this.handleSubmit(event, signupUser)}
+              >
                 <FormInput
                   type="text"
                   name="username"
@@ -64,10 +85,14 @@ class SignUp extends React.Component {
                   value={passwordConfirmation}
                   onChange={this.handleChange}
                 />
-                <button type="submit" className="button-primary">
+                <button
+                  type="submit"
+                  disabled={loading || this.validateForm()}
+                  className="button-primary"
+                >
                   Submit
                 </button>
-                {/* { error && <Error error={error} /> } */}
+                {error && <Error error={error} />}
               </form>
             );
           }}
@@ -78,4 +103,3 @@ class SignUp extends React.Component {
 }
 
 export default SignUp;
-
