@@ -39,6 +39,7 @@ class SignUp extends React.Component {
       !username ||
       !email ||
       !password ||
+      password.length < 8 ||
       password !== passwordConfirmation;
     return isInvalid;
   };

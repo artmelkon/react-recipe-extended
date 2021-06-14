@@ -1,15 +1,20 @@
 const { gql } = require("apollo-server-express");
 
 exports.typeDefs = gql`
+  enum Order {
+    asc
+    desc
+  }
   type Recipe {
     _id: ID!
     name: String!
     category: String!
     description: String!
     instructions: String!
-    createdDate: String
     likes: Int
     username: String
+    createdAt: String!
+    updatedAt: String!
   }
 
   type User {

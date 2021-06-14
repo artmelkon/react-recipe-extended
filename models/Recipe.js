@@ -28,6 +28,8 @@ const RecipeSchema = new Schema({
     default: 0
   },
   username: String
+}, {
+  timestamp: true
 });
 
 module.exports = mongoose.model('Recipe', RecipeSchema);
