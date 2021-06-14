@@ -26,6 +26,7 @@ exports.typeDefs = gql`
   }
 
   type RootQuery {
+    getUsers: [User!]!
     getAllRecipes: [Recipe]
     signinUser(username: String!, password: String!): Token
   }

@@ -1,7 +1,12 @@
-import React from 'react';
+import React from "react";
 
-const CustomButton = ({ children, ...otherProps}) => (
-  <button className="custom-button"  {...otherProps}>{ children.toUpperCase() }</button>
-)
+const CustomButton = ({ children, isGoogleSignedIn, ...otherProps }) => (
+  <button
+    className={`${isGoogleSignedIn ? "google-sign-in" : ""} custom-button`}
+    {...otherProps}
+  >
+    {children}
+  </button>
+);
 
 export default CustomButton;

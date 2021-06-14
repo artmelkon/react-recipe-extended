@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// const User = require('../models/user');
 require('dotenv').config({ path: './env/.env'});
 
 const createToken = (user, secret, expiresIn) => {
@@ -10,6 +11,10 @@ const createToken = (user, secret, expiresIn) => {
 }
 exports.resolvers = {
   RootQuery: {
+    getUsers: async (toot, args, {User}, info) => {
+      const allUsers = await User.find();
+      return allUsers
+    },
     getAllRecipes: async (root, args, { Recipe }, info) => {
       const allRecipes = await Recipe.find();
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
