@@ -28,9 +28,11 @@ class SignUp extends React.Component {
   handleSubmit = async (event, signupUser) => {
     event.preventDefault();
 
-    const data = signupUser();
-    await console.log(data);
-    this.clearState();
+    signupUser().then(({data}) => {
+      console.log(data);
+      localStorage.setItem('token', data.signupUser.token)
+      this.clearState();
+    });
   };
 
   validateForm = () => {

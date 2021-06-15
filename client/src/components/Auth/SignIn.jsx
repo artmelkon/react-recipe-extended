@@ -1,34 +1,58 @@
 import React from "react";
-import { Query } from "react-apollo";
+import { Mutation, Query } from "react-apollo";
 
 import FormInput from "../FormInput/FormInput.component";
-import CustomButton from '../CustomButton/CustomButton.component';
-import { signInWithGoogle } from '../../FireBase/FireBase.utils';
-import Error from '../Error';
-import { SIGNIN_USER } from "../../queries";
+import CustomButton from "../CustomButton/CustomButton.component";
+import { signInWithGoogle } from "../../FireBase/FireBase.utils";
+import Error from "../Error";
+import { SIGNIN_USER } from "../../queries/index";
 
 const initialState = {
-  username: '',
-  password: '',
+  username: "",
+  password: "",
 };
 
-class SignIn extends React.Component{
-  state = { ...initialState};
+class SignIn extends React.Component {
+  state = { ...initialState };
 
-  handleChange = event => {
-    const { name, value} = event.target;
-    this.setState({[name]: value})
-  }
-  
+  clearState = () => {
+    this.setState({ ...initialState });
+  };
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+    this.setState({ [name]: value });
+  };
+
+  handleSubmit = async (event, signinUser) => {
+    event.preventDefault();
+
+    signinUser().then(({ data }) => {
+      console.log(data)
+      localStorage.setItem("token", data.signinUser.token);
+      this.clearState();
+    })
+    
+  };
+
+  validateForm = () => {
+    const { username, password } = this.state;
+    const isInvalid = !username || !password;
+    return isInvalid;
+  };
+
   render() {
     const { username, password } = this.state;
     return (
       <div className="App">
         <h2 className="App">Sign In</h2>
-        <Query query={SIGNIN_USER}>
-          {() => {
+        <Mutation mutation={SIGNIN_USER} variables={{ username, password }}>
+          {(signinUser, { data, loading, error }) => {
             return (
-              <form className="form">
+              <form
+                className="form"
+                onSubmit={(event) => this.handleSubmit(event, signinUser)}
+              >
                 <FormInput
                   type="text"
                   name="username"
@@ -45,14 +69,20 @@ class SignIn extends React.Component{
                   required
                   onChange={this.handleChange}
                 />
-                <CustomButton type="submit">sign in</CustomButton>
+                <CustomButton
+                  type="submit"
+                  disabled={loading || this.validateForm()}
+                >
+                  sign in
+                </CustomButton>
                 <CustomButton onClick={signInWithGoogle} isGoogleSignedIn>
                   google sign in
                 </CustomButton>
+                {error && <Error error={error} />}
               </form>
             );
           }}
-        </Query>
+        </Mutation>
       </div>
     );
   }
