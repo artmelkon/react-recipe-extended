@@ -15,7 +15,7 @@ const client = new ApolloClient({
   fetchOptions: {
     credentials: 'include'
   },
-  request: operaton => {
+  request: operation => {
     const token = localStorage.getItem('token');
     operation.setContext({
       headers: {
@@ -23,9 +23,9 @@ const client = new ApolloClient({
       }
     })
   },
-  onError: ({ networkErroor }) => {
+  onError: ({ networkError }) => {
     if(networkError) {
-      console.log('Netework Error', networkErroor);
+      console.log('Netework Error', networkError);
 
       // if(networkError.statusCode === 401) {
       //   localStorage.setItem()
