@@ -3,12 +3,13 @@ import "firebase/firestore";
 import "firebase/auth";
 
 const config = {
-  apiKey: "AIzaSyALo_LoFtyFBMeLSLTPkFJVY5aS4k5Jgcc",
-  authDomain: "recipes-43d2e.firebaseapp.com",
-  projectId: "recipes-43d2e",
-  storageBucket: "recipes-43d2e.appspot.com",
-  messagingSenderId: "624660616205",
-  appId: "1:624660616205:web:1792c83f84350852977144",
+  apiKey: "AIzaSyDNm3gVmsHgTCihFnOGLkrTJqXIVsgTyr8",
+  authDomain: "recipes-auth-b9967.firebaseapp.com",
+  projectId: "recipes-auth-b9967",
+  storageBucket: "recipes-auth-b9967.appspot.com",
+  messagingSenderId: "789768690481",
+  appId: "1:789768690481:web:aaa0f3686645c9ae8e6e10",
+  measurementId: "G-BTYZY7T950",
 };
 
 export const createUserProfileDocument = async (userAuth, additionalData) => {
@@ -22,7 +23,12 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     const createdAt = new Date();
 
     try {
-      await userRef.set({ displayName, email, createdAt, ...additionalData });
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
     } catch (err) {
       throw new Error("Error creating user ", err.message);
     }

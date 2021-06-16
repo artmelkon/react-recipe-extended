@@ -1,5 +1,5 @@
 import React from "react";
-import { Mutation, Query } from "react-apollo";
+import { Mutation } from "react-apollo";
 
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
@@ -76,7 +76,7 @@ class SignIn extends React.Component {
                   sign in
                 </CustomButton>
                 <CustomButton onClick={signInWithGoogle} isGoogleSignedIn>
-                  google sign in
+                  sign in with google
                 </CustomButton>
                 {error && <Error error={error} />}
               </form>
