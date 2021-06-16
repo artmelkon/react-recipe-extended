@@ -18,9 +18,8 @@ class App extends React.Component {
   unsubscribeFromAuth = null;
 
   componentDidMount() {
-    console.log('hell world')
     auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user }, () => console.log(user));
+      this.setState({ currentUser: user }, () => console.log(user.displayName, ':', user.email));
     })
   }
 
@@ -32,7 +31,7 @@ class App extends React.Component {
           <Route path="/signin" component={SignIn} />
           <Route path="/signup" component={SignUp} />
           <Redirect to="/" />
-        </Switch>{" "}
+        </Switch>
       </div>
     );
   }
