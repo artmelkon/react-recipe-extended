@@ -1,9 +1,10 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router";
 // import { Query } from "react-apollo";
-import { auth, createUserProfileDocument } from '../FireBase/FireBase.utils';
+import { auth } from '../FireBase/FireBase.utils';
 
 // import { GET_ALL_RECIPES } from "../queries/index";
+import Header from './Header/Header';
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 
@@ -12,20 +13,25 @@ import "./App.css";
 
 class App extends React.Component {
   state = {
-    currentUser: null
+    currentGoogleUser: null
   }
 
   unsubscribeFromAuth = null;
 
   componentDidMount() {
     auth.onAuthStateChanged(user => {
-      this.setState({ currentUser: user }, () => console.log(user.displayName, ':', user.email));
+      this.setState({ currentGoogleUser: user }, () => console.log(user.displayName, ':', user.email));
     })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
   }
 
   render() {
     return (
       <div className="App">
+        <Header />
         <Switch>
           <Route exact path="/" component={App} />
           <Route path="/signin" component={SignIn} />
