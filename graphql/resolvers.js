@@ -50,7 +50,7 @@ exports.resolvers = {
 
       user.save();
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1hr") };
+      return { token: createToken(user, process.env.JWT_SECRET, "1h") };
     },
 
     signinUser: async (root, { username, password }, { User }) => {
@@ -60,7 +60,7 @@ exports.resolvers = {
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) throw new Error("Invalid Password");
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1hr") };
+      return { token: createToken(user, process.env.JWT_SECRET, "1h") };
     },
   },
 };

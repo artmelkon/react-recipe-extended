@@ -1,25 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 import { auth } from '../../FireBase/FireBase.utils';
 import Logo from '../../assets/img/gp-color-logo.png';
 
-const Header = ({ currentGoogleUser }) => (
+const Header = ({ currentUser }) => (
   <div className="header">
-    <Link className="container__logo" to="/">
+    <NavLink className="container__logo" to="/">
       <img src={Logo} className="container__logo logo" alt="GP Color" />
-    </Link>
+    </NavLink>
     <div className="nav">
-      {currentGoogleUser ? (
-        <div className="nav__link" onClick={() => auth.signOut()}>Log Out</div>
+      {currentUser ? (
+        <button className="nav__link" onClick={() => auth.signOut()}>Log Out</button>
       ) : (
-        <Link className="nav__link" to="/signin">
-          Login
-        </Link>
+        <div>
+          <NavLink className="nav__link" to="/signin">
+            Login
+          </NavLink>
+          <NavLink className="nav__link" to="/signup">
+            Register
+          </NavLink>
+        </div>
       )}
-      <Link className="nav__link" to="/signup">
-        Register
-      </Link>
     </div>
   </div>
 );

@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const express = require('express');
@@ -17,7 +17,7 @@ const crosOptions = {
   credentials: true,
 };
 
-app.use(cors());
+app.use(cors(crosOptions));
 
 /* Set up JWT authentication middleware */
 app.use( async (req, res, next ) => {
@@ -51,7 +51,7 @@ const schema = makeExecutableSchema({
   resolvers
 });
 
-const server = new ApolloServer({ schema, context:{ User, Recipe,  } });
+const server = new ApolloServer({ schema, context:{ User, Recipe } });
 server.applyMiddleware({ app })
 
 // app.use(express.json());

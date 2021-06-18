@@ -1,46 +1,22 @@
 import React from "react";
-import { Switch, Route, Redirect } from "react-router";
-// import { Query } from "react-apollo";
-import { auth } from '../FireBase/FireBase.utils';
+import { Query } from "react-apollo";
 
-// import { GET_ALL_RECIPES } from "../queries/index";
-import Header from './Header/Header';
-import SignIn from "./Auth/SignIn";
-import SignUp from "./Auth/SignUp";
-
+import { GET_ALL_RECIPES } from "../queries/index";
 import "./App.css";
 
 
-class App extends React.Component {
-  state = {
-    currentGoogleUser: null
-  }
-
-  unsubscribeFromAuth = null;
-
-  componentDidMount() {
-    auth.onAuthStateChanged(user => {
-      this.setState({ currentGoogleUser: user }, () => console.log(user.displayName, ':', user.email));
-    })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <Switch>
-          <Route exact path="/" component={App} />
-          <Route path="/signin" component={SignIn} />
-          <Route path="/signup" component={SignUp} />
-          <Redirect to="/" />
-        </Switch>
-      </div>
-    );
-  }
-}
+const App = () => (
+  <div className="App">
+    <h1>Home</h1>
+    <Query query={GET_ALL_RECIPES}>
+      {({ data, loading, error }) => {
+        if(loading) return <div>Loading...</div>
+        if(error) return <div>Error!</div>
+        console.log(data)
+        return (<p>Recipes</p>);
+      }}
+    </Query>
+  </div>
+)
 
 export default App;

@@ -3,7 +3,6 @@ import { Mutation } from "react-apollo";
 
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
-import { signInWithGoogle } from "../../FireBase/FireBase.utils";
 import Error from "../Error";
 import { SIGNIN_USER } from "../../queries/index";
 
@@ -28,7 +27,6 @@ class SignIn extends React.Component {
     event.preventDefault();
 
     signinUser().then(({ data }) => {
-      console.log(data)
       localStorage.setItem("token", data.signinUser.token);
       this.clearState();
     })
@@ -74,9 +72,6 @@ class SignIn extends React.Component {
                   disabled={loading || this.validateForm()}
                 >
                   sign in
-                </CustomButton>
-                <CustomButton onClick={signInWithGoogle} isGoogleSignedIn>
-                  sign in with google
                 </CustomButton>
                 {error && <Error error={error} />}
               </form>
