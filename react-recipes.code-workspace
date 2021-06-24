@@ -17,7 +17,7 @@
 		},
 		"emmet.showAbbreviationSuggestions": true,
 		"emmet.includeLanguages": {
-			"javascsript":"html"
+			"javascript":"html"
 		}
 	}
 }

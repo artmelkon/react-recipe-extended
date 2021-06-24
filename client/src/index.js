@@ -1,4 +1,4 @@
-import { React, Fragment } from "react";
+import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import {
   BrowserRouter as Router,
@@ -15,11 +15,13 @@ import {
 import { setContext } from "@apollo/client/link/context";
 
 import App from "./components/App";
-import withSession from './components/withSession';
+import withSession from "./components/withSession";
 import Navbar from "./components/Navbar/Navbar";
 import SignIn from "./components/Auth/SignIn";
 import SignUp from "./components/Auth/SignUp";
-import Sech from './components/Recipe/Search';
+import Search from "./components/Recipe/Search";
+import AddRecipe from "./components/Recipe/AddRecipe";
+import Profile from "./components/Profile/Profile";
 
 import "./index.css";
 
@@ -39,21 +41,22 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
-const Root = (refetch) => (
+const Root = ({ refetch, session }) => (
   <Router>
     <Fragment>
-      <Navbar />
+      <Navbar session={session} />
       <Switch>
         <Route exact path="/" component={App} />
         <Route path="/search" component={Search} />
         <Route path="/signin" render={() => <SignIn refetch={refetch} />} />
         <Route path="/signup" render={() => <SignUp refetch={refetch} />} />
+        <Route path="/recipe/add" component={AddRecipe} />
+        <Route path="/profile" component={Profile} />
         <Redirect to="/" />
       </Switch>
     </Fragment>

@@ -27,7 +27,7 @@ exports.resolvers = {
           path: 'favorites',
           model: 'Recipe'
         });
-      console.log(user);
+      // console.log(user);
       return user;
     }
   },
