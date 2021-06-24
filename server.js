@@ -1,14 +1,14 @@
-const { ApolloServer } = require('apollo-server-express');
+const jwt = require("jsonwebtoken");
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
-const express = require('express');
+const { ApolloServer, gql } = require("apollo-server-express");
+const express = require("express");
+require("dotenv").config({ path: "./env/.env" });
 
-const User = require('./models/User');
-const Recipe = require('./models/Recipe');
+const User = require("./models/User");
+const Recipe = require("./models/Recipe");
 
-const { typeDefs } = require('./graphql/schema');
-const { resolvers } = require('./graphql/resolvers');
-const { makeExecutableSchema } = require('graphql-tools');
+const { typeDefs } = require("./graphql/schema");
+const { resolvers } = require("./graphql/resolvers");
 
 const app = express();
 
@@ -16,50 +16,30 @@ const crosOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
-
 app.use(cors(crosOptions));
 
 /* Set up JWT authentication middleware */
-app.use( async (req, res, next ) => {
-  const token = req.headers['authorization'];
-  if(token !== "null") {
+/* Set JWT authentication middleware */
+app.use( async (req, res, next) => {
+  const token = req.headers.authorization;
+  if(token !== null) {
     try{
       const currentUser = await jwt.verify(token, process.env.JWT_SECRET);
-      req.currentUser = currentUser
-      console.log(currentUser)
-    } catch(err) {
-      console.error(err)
-    }
+      req.currentUser = currentUser;
+    } catch(err) { console.error(err)}
   }
   next();
 })
 
-// const typeDefs = gql `
-//   type Query {
-//     hello: String
-//   }
-// `;
-
-// const resolvers = {
-//   Query: {
-//     hello: () => 'Hello World'
-//   }
-// }
-
-const schema = makeExecutableSchema({
+const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: ({ req }) => {
+    return { User, Recipe, currentUser: req.currentUser };
+  },
 });
 
-const server = new ApolloServer({ schema, context:{ User, Recipe } });
-server.applyMiddleware({ app })
-
-// app.use(express.json());
-/* create GreaphQL Middleware Application */
-/* connect schema with graphql */
+server.applyMiddleware({ app });
 
 /* connecting database */
-require('./utils/db_connect')(app)
-
-// const PORT = process.env.PORT || 4444;
-// app.listen(PORT, () => console.log(`Server is running on Port ${PORT}`));
+require("./utils/db_connect")(app);

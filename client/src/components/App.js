@@ -1,5 +1,5 @@
 import React from "react";
-import { Query } from "react-apollo";
+import { Query } from "@apollo/client/react/components";
 
 import { GET_ALL_RECIPES } from "../queries/index";
 import "./App.css";

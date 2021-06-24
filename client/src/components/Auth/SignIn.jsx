@@ -1,5 +1,6 @@
 import React from "react";
-import { Mutation } from "react-apollo";
+import { withRouter } from 'react-router-dom';
+import { Mutation } from "@apollo/client/react/components";
 
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
@@ -26,11 +27,14 @@ class SignIn extends React.Component {
   handleSubmit = async (event, signinUser) => {
     event.preventDefault();
 
-    signinUser().then(({ data }) => {
+    signinUser().then(async ({ data }) => {
+      console.log('login user ', data);
       localStorage.setItem("token", data.signinUser.token);
+      // await this.props.refetch()
       this.clearState();
+      this.props.history.push('/')
     })
-    
+
   };
 
   validateForm = () => {
@@ -83,4 +87,4 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+export default withRouter(SignIn);

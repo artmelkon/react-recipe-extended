@@ -1,58 +1,70 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import ApolloClient from 'apollo-boost';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProvider } from 'react-apollo';
+import { React, Fragment } from "react";
+import ReactDOM from "react-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 
 import App from "./components/App";
-import Header from './components/Header/Header';
-import SignIn from './components/Auth/SignIn';
-import SignUp from './components/Auth/SignUp';
+import withSession from './components/withSession';
+import Navbar from "./components/Navbar/Navbar";
+import SignIn from "./components/Auth/SignIn";
+import SignUp from "./components/Auth/SignUp";
+import Sech from './components/Recipe/Search';
 
-import './index.css';
+import "./index.css";
 
-const client = new ApolloClient({
-  uri: 'http://localhost:4444/graphql',
-  fetchOptions: {
-    credentials: 'include'
-  },
-  request: operation => {
-    const token = localStorage.getItem('token');
-    operation.setContext({
-      headers: {
-        authorization: token
-      }
-    })
-  },
-  onError: ({ networkError }) => {
-    if(networkError) {
-      console.log('Netework Error', networkError);
-
-      // if(networkError.statusCode === 401) {
-      //   localStorage.setItem()
-      // }
-    }
-  },
-  cache: new InMemoryCache()
+const httpLink = createHttpLink({
+  uri: "http://localhost:4444/graphql",
 });
 
-const Root = () => (
-  <Router>
-    <Header />
-    <Switch>
-      <Route exact path="/" component={App} />
-      <Route path="/signin" component={SignIn} />
-      <Route path="/signup" component={SignUp} />
-      <Redirect to="/" />
-    </Switch>
-  </Router>
-)
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem("token");
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token,
+    },
+  };
+});
 
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+const Root = (refetch) => (
+  <Router>
+    <Fragment>
+      <Navbar />
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/search" component={Search} />
+        <Route path="/signin" render={() => <SignIn refetch={refetch} />} />
+        <Route path="/signup" render={() => <SignUp refetch={refetch} />} />
+        <Redirect to="/" />
+      </Switch>
+    </Fragment>
+  </Router>
+);
+
+const RootWithSession = withSession(Root);
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Root />
+    <RootWithSession />
   </ApolloProvider>,
   document.getElementById("root")
 );

@@ -1,5 +1,6 @@
 import React from "react";
-import { Mutation } from "react-apollo";
+import { withRouter } from "react-router-dom";
+import { Mutation } from "@apollo/client/react/components";
 
 import FormInput from "../FormInput/FormInput.component";
 import CustomButton from "../CustomButton/CustomButton.component";
@@ -28,10 +29,12 @@ class SignUp extends React.Component {
   handleSubmit = async (event, signupUser) => {
     event.preventDefault();
 
-    signupUser().then(({data}) => {
-      console.log(data);
-      localStorage.setItem('token', data.signupUser.token)
+    signupUser().then(async ({data}) => {
+      // console.log(data);
+      localStorage.setItem('token', data.signupUser.token);
+      await this.props.refetch()
       this.clearState();
+      this.props.history.push('/');
     });
   };
 
@@ -41,7 +44,7 @@ class SignUp extends React.Component {
       !username ||
       !email ||
       !password ||
-      password.length < 8 ||
+      password.length < 3 ||
       password !== passwordConfirmation;
     return isInvalid;
   };

@@ -28,10 +28,12 @@ exports.typeDefs = gql`
 
   type Token {
     token: String!
+    userId: String!
   }
 
   type RootQuery {
     getUsers: [User!]!
+    getCurrentUser: User
     getAllRecipes: [Recipe]
   }
 

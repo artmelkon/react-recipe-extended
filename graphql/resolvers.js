@@ -10,7 +10,7 @@ const createToken = (user, secret, expiresIn) => {
 };
 exports.resolvers = {
   RootQuery: {
-    getUsers: async (toot, args, { User }, info) => {
+    getUsers: async (root, args, { User }, info) => {
       const allUsers = await User.find();
       return allUsers;
     },
@@ -19,6 +19,17 @@ exports.resolvers = {
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
       return allRecipes;
     },
+    getCurrentUser: async (tot, args, { currentUser, User }) => {
+      if(!currentUser) return null;
+
+      const user = await User.findOne({username: currentUser.username})
+        .populate({
+          path: 'favorites',
+          model: 'Recipe'
+        });
+      console.log(user);
+      return user;
+    }
   },
   RootMutation: {
     addRecipe: async (
@@ -50,7 +61,7 @@ exports.resolvers = {
 
       user.save();
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1h") };
+      return { token: createToken(user, process.env.JWT_SECRET, "1h"), userId: user.id };
     },
 
     signinUser: async (root, { username, password }, { User }) => {
@@ -60,7 +71,7 @@ exports.resolvers = {
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) throw new Error("Invalid Password");
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1h") };
+      return { token: createToken(user, process.env.JWT_SECRET, "1h"), userId: user._id.toString() };
     },
   },
 };
