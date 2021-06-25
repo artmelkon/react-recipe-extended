@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const cors = require('cors');
+const cors = require("cors");
 const { ApolloServer, gql } = require("apollo-server-express");
 const express = require("express");
 require("dotenv").config({ path: "./env/.env" });
@@ -20,22 +20,25 @@ app.use(cors(crosOptions));
 
 /* Set up JWT authentication middleware */
 /* Set JWT authentication middleware */
-app.use( async (req, res, next) => {
-  const token = req.headers.authorization;
-  if(token !== null) {
-    try{
+app.use(async (req, res, next) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (token !== "null") {
+    try {
       const currentUser = await jwt.verify(token, process.env.JWT_SECRET);
       req.currentUser = currentUser;
-    } catch(err) { console.error(err)}
+    } catch (err) {
+      console.error(err);
+    }
   }
   next();
-})
+});
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
-    return { User, Recipe, currentUser: req.currentUser };
+    const user = req.currentUser || "";
+    return { User, Recipe, currentUser: user };
   },
 });
 

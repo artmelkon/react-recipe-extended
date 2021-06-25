@@ -2,8 +2,10 @@ import React from 'react';
 import { withRouter} from 'react-router-dom';
 import { ApolloConsumer } from "@apollo/client";
 
+import CustomButton from '../CustomButton/CustomButton.component';
+
 const handleSignout = (client, history) => {
-  localStorage.removeItem('token');
+  localStorage.setItem('token', '');
   client.resetStore();
   history.push('/signin')
 }
@@ -13,9 +15,9 @@ const SignOut = ({ history }) => (
     {client => {
       console.log("logout client ", client);
       return (
-        <button onClick={() => handleSignout(client, history)}>
+        <CustomButton onClick={() => handleSignout(client, history)}>
           Sing Out
-        </button>
+        </CustomButton>
       );
     }}
   </ApolloConsumer>
