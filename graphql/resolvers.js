@@ -15,9 +15,13 @@ exports.resolvers = {
       return allUsers;
     },
     getAllRecipes: async (root, args, { Recipe }, info) => {
-      const allRecipes = await Recipe.find();
+      const allRecipes = await Recipe.find().sort({ createdDate: "desc" });
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
       return allRecipes;
+    },
+    getRecipe: async (root, {_id}, { Recipe}) => {
+      const recipe = await Recipe.findOne({ _id });
+      return recipe;
     },
     getCurrentUser: async (tot, args, { currentUser, User }) => {
       if(!currentUser) return null;
@@ -34,7 +38,7 @@ exports.resolvers = {
   RootMutation: {
     addRecipe: async (
       root,
-      { name, description, category, instructions, username },
+      { name, description, category, imageUrl, instructions, username },
       { Recipe }
     ) => {
       const newRecipe = await new Recipe({
@@ -42,6 +46,7 @@ exports.resolvers = {
         description,
         category,
         instructions,
+        imageUrl,
         username,
       }).save();
 

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer, makeExecutableSchema } = require("apollo-server-express");
 const express = require("express");
 require("dotenv").config({ path: "./env/.env" });
 
@@ -9,6 +9,7 @@ const Recipe = require("./models/Recipe");
 
 const { typeDefs } = require("./graphql/schema");
 const { resolvers } = require("./graphql/resolvers");
+const schema = makeExecutableSchema({ typeDefs, resolvers});
 
 const app = express();
 
@@ -21,8 +22,15 @@ app.use(cors(crosOptions));
 /* Set up JWT authentication middleware */
 /* Set JWT authentication middleware */
 app.use(async (req, res, next) => {
-  const token = req.headers.authorization.split(" ")[1];
-  if (token !== "null") {
+  const isToken = req.headers.authorization;
+  // console.log("client token ", typeof isToken);
+
+  if (isToken === '') {
+    console.log("status 400");
+    // return;
+  } else if (typeof isToken === "string") {
+    const token = req.headers.authorization.split(" ")[1];
+
     try {
       const currentUser = await jwt.verify(token, process.env.JWT_SECRET);
       req.currentUser = currentUser;
@@ -30,12 +38,12 @@ app.use(async (req, res, next) => {
       console.error(err);
     }
   }
+
   next();
 });
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
   context: ({ req }) => {
     const user = req.currentUser || "";
     return { User, Recipe, currentUser: user };

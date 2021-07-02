@@ -11,6 +11,7 @@ exports.typeDefs = gql`
     category: String!
     description: String!
     instructions: String!
+    imageUrl: String!
     likes: Int
     username: String
     createdAt: String!
@@ -31,9 +32,15 @@ exports.typeDefs = gql`
     userId: String!
   }
 
+  input AuthUserInput {
+    username: String!
+    password: String!
+  }
+
   type RootQuery {
     getUsers: [User!]!
     getCurrentUser: User
+    getRecipe(_id:ID!): Recipe
     getAllRecipes: [Recipe]
   }
 
@@ -42,6 +49,7 @@ exports.typeDefs = gql`
       name: String!
       description: String!
       category: String
+      imageUrl: String!
       instructions: String!
       username: String
     ): Recipe

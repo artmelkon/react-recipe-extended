@@ -21,7 +21,44 @@ export const GET_CURRENT_USER = gql `
   }
 `;
 
+export const GET_RECIPE = gql`
+  query GetRecipe($_id: ID!) {
+    getRecipe(_id: $_id) {
+      _id
+      name
+      category
+      description
+      instructions
+      likes
+      username
+    }
+  }
+`;
+
 /* Recipes Mutation */
+export const ADD_RECIPE = gql`
+  mutation ($name: String!
+    $description: String!
+    $category: String
+    $instructions: String!
+    $imageUrl: String!
+    $username: String) {
+    addRecipe(name: $name
+      description: $description
+      category: $category
+      instructions: $instructions
+      imageUrl: $imageUrl
+      username: $username) {
+      _id
+      name
+      category
+      description
+      instructions
+      imageUrl
+      likes
+      username    }
+  }
+`;
 
 /* User Query */
 /* User Mutation */
