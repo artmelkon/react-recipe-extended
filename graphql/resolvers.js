@@ -25,12 +25,14 @@ exports.resolvers = {
     },
     searchRecipes: async (root, { searchTerm }, { Recipe }) => {
       if (searchTerm) {
-        const searchResults = await Recipe.find({
-          $text: {$search: searchTerm}
-        },
-        {
-          score: {$meta: "textScore"}
-        }).sort({score: {$meta:"textScore"}});
+        const searchResults = await Recipe.find(
+          {
+            $text: { $search: searchTerm },
+          },
+          {
+            score: { $meta: "textScore" },
+          }
+        ).sort({ score: { $meta: "textScore" } });
         return searchResults;
       } else {
         const recipes = await Recipe.find().sort({
@@ -40,7 +42,7 @@ exports.resolvers = {
         return recipes;
       }
     },
-    getCurrentUser: async (tot, args, { currentUser, User }) => {
+    getCurrentUser: async (root, args, { currentUser, User }) => {
       if (!currentUser) return null;
 
       const user = await User.findOne({
