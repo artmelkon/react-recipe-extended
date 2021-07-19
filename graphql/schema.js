@@ -14,8 +14,7 @@ exports.typeDefs = gql`
     imageUrl: String!
     likes: Int
     username: String
-    createdAt: String!
-    updatedAt: String!
+    createdDate: String
   }
 
   type User {
@@ -40,8 +39,9 @@ exports.typeDefs = gql`
   type RootQuery {
     getUsers: [User!]!
     getCurrentUser: User
-    getRecipe(_id:ID!): Recipe
+    getRecipe(_id: ID!): Recipe!
     getAllRecipes: [Recipe]
+    searchRecipes(searchTerm: String): [Recipe]
   }
 
   type RootMutation {

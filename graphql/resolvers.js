@@ -19,21 +19,39 @@ exports.resolvers = {
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
       return allRecipes;
     },
-    getRecipe: async (root, {_id}, { Recipe}) => {
+    getRecipe: async (root, { _id }, { Recipe }) => {
       const recipe = await Recipe.findOne({ _id });
       return recipe;
     },
-    getCurrentUser: async (tot, args, { currentUser, User }) => {
-      if(!currentUser) return null;
-
-      const user = await User.findOne({username: currentUser.username})
-        .populate({
-          path: 'favorites',
-          model: 'Recipe'
+    searchRecipes: async (root, { searchTerm }, { Recipe }) => {
+      if (searchTerm) {
+        const searchResults = await Recipe.find({
+          $text: {$search: searchTerm}
+        },
+        {
+          score: {$meta: "textScore"}
+        }).sort({score: {$meta:"textScore"}});
+        return searchResults;
+      } else {
+        const recipes = await Recipe.find().sort({
+          like: "desc",
+          createdDate: "desc",
         });
+        return recipes;
+      }
+    },
+    getCurrentUser: async (tot, args, { currentUser, User }) => {
+      if (!currentUser) return null;
+
+      const user = await User.findOne({
+        username: currentUser.username,
+      }).populate({
+        path: "favorites",
+        model: "Recipe",
+      });
       // console.log(user);
       return user;
-    }
+    },
   },
   RootMutation: {
     addRecipe: async (
@@ -66,7 +84,10 @@ exports.resolvers = {
 
       user.save();
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1h"), userId: user.id };
+      return {
+        token: createToken(user, process.env.JWT_SECRET, "1h"),
+        userId: user.id,
+      };
     },
 
     signinUser: async (root, { username, password }, { User }) => {
@@ -76,7 +97,10 @@ exports.resolvers = {
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) throw new Error("Invalid Password");
 
-      return { token: createToken(user, process.env.JWT_SECRET, "1h"), userId: user._id.toString() };
+      return {
+        token: createToken(user, process.env.JWT_SECRET, "1h"),
+        userId: user._id.toString(),
+      };
     },
   },
 };
