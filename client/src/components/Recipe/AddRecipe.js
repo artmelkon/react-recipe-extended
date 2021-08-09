@@ -14,7 +14,7 @@ const initialState = {
   category: "Breakfast",
   imageUrl: "",
   description: "",
-  username: "",
+  creator: "",
 };
 
 class AddRecipe extends React.Component {
@@ -25,13 +25,12 @@ class AddRecipe extends React.Component {
   };
 
   componentDidMount() {
-    console.log(this.props.session.getCurrentUser.username);
-    this.setState({ username: this.props.session.getCurrentUser.username });
+    this.setState({ creator: this.props.session.getCurrentUser._id });
   }
 
   handleChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value }, () => console.log(name, ": ", value));
+    this.setState({ [name]: value });
   };
 
   handleSubmit = (event, addRecipe) => {
@@ -43,17 +42,17 @@ class AddRecipe extends React.Component {
     });
   };
 
-  updateCache = (cache, {data: {addRecipe}}) => {
+  updateCache = (cache, { data: { addRecipe } }) => {
     const { getAllRecipes } = cache.readQuery({ query: GET_ALL_RECIPES });
-    console.log('get query ', getAllRecipes);
-    console.log('from cache ', addRecipe);
+    // console.log("get query ", getAllRecipes);
+    // console.log("from cache ", addRecipe);
 
     cache.writeQuery({
       query: GET_ALL_RECIPES,
       data: {
-        getAllRecipes: [addRecipe, ...getAllRecipes]
-      }
-    })
+        getAllRecipes: [addRecipe, ...getAllRecipes],
+      },
+    });
   };
 
   validateForm = () => {
@@ -64,8 +63,9 @@ class AddRecipe extends React.Component {
   };
 
   render() {
-    const { name, category, description, imageUrl, instructions, username } =
+    const { name, category, description, imageUrl, instructions, creator } =
       this.state;
+      // console.log('this state ', this.state)
 
     return (
       <Mutation
@@ -76,14 +76,15 @@ class AddRecipe extends React.Component {
           description,
           imageUrl,
           instructions,
-          username,
+          creator,
         }}
         update={this.updateCache}
       >
         {(addRecipe, { data, loading, error }) => {
           if (loading) return <p>Loading...</p>;
           if (error) return <p>Errpr!</p>;
-          console.log(data);
+          {/* console.log('Add recpee data ', data); */}
+
           return (
             <div className="App">
               <h2 className="App">Add Recipe</h2>
@@ -111,21 +112,21 @@ class AddRecipe extends React.Component {
                   onChange={this.handleChange}
                   placeholder="Description"
                 />
-                {/* <FormInput
+                <FormInput
                   type="text"
                   name="imageUrl"
                   // value={imageUrl}
                   placeholder="Add Image"
                   onChange={this.handleChange}
-                /> */}
-                <FormInput
+                />
+                {/* <FormInput
                   type="file"
                   name="imageUrl"
                   // value={imageUrl}
                   placeholder="Add Image"
                   onChange={this.handleChange}
                   accept=".psd, .tif, .tiff"
-                />
+                /> */}
                 <textarea
                   name="instructions"
                   value={instructions}

@@ -19,8 +19,9 @@ exports.resolvers = {
       // return { ...allRecipes._doc, _id: allRecipes._id.toString() }
       return allRecipes;
     },
-    getRecipe: async (root, { _id }, { Recipe }) => {
-      const recipe = await Recipe.findOne({ _id });
+    getRecipe: async (root, { _id }, { Recipe, User }) => {
+      const recipe = await Recipe.findById(_id).populate("creator");
+      console.log(recipe);
       return recipe;
     },
     searchRecipes: async (root, { searchTerm }, { Recipe }) => {
@@ -51,24 +52,31 @@ exports.resolvers = {
         path: "favorites",
         model: "Recipe",
       });
-      // console.log(user);
+      console.log('user ', user);
       return user;
+    },
+    getUserRecipes: async (root, { username }, { Recipe }) => {
+      const userRecipes = await Recipe.find({ username });
+      return userRecipes;
     },
   },
   RootMutation: {
     addRecipe: async (
       root,
-      { name, description, category, imageUrl, instructions, username },
-      { Recipe }
+      { name, description, category, imageUrl, instructions, creator },
+      { Recipe, User }
     ) => {
-      const newRecipe = await new Recipe({
+      const user = await User.findOne({_id: creator})
+      console.log(user.username)
+      const newRecipe = new Recipe({
         name,
         description,
         category,
         instructions,
         imageUrl,
-        username,
-      }).save();
+        creator: user,
+      });
+      await newRecipe.save();
 
       return newRecipe;
     },
@@ -92,8 +100,8 @@ exports.resolvers = {
       };
     },
 
-    signinUser: async (root, { username, password }, { User }) => {
-      const user = await User.findOne({ username });
+    signinUser: async (root, { email, password }, { User }) => {
+      const user = await User.findOne({ email });
       if (!user) throw new Error("User not found!");
 
       const isValidPassword = await bcrypt.compare(password, user.password);

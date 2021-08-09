@@ -11,26 +11,43 @@ export const GET_ALL_RECIPES = gql`
   }
 `;
 
-export const GET_CURRENT_USER = gql `
+export const GET_CURRENT_USER = gql`
   query {
     getCurrentUser {
+      _id
       username
       email
+      favorites {
+        _id
+        name
+      }
       joinDate
     }
   }
 `;
 
+export const GET_USER_RECIPES = gql`
+  query GetUserRecipes($username: String!) {
+    getUserRecipes(username: $username) {
+      _id
+      name
+      likes
+      createdDate
+    }
+  }
+`;
 export const GET_RECIPE = gql`
   query GetRecipe($_id: ID!) {
     getRecipe(_id: $_id) {
-      _id
       name
       category
       description
       instructions
-      likes
-      username
+      imageUrl
+      creator {
+        username
+      }
+      createdDate
     }
   }
 `;
@@ -47,26 +64,33 @@ export const SEARCH_RECIPES = gql`
 
 /* Recipes Mutation */
 export const ADD_RECIPE = gql`
-  mutation ($name: String!
+  mutation AddRecipe(
+    $name: String!
     $description: String!
     $category: String
-    $instructions: String!
     $imageUrl: String!
-    $username: String) {
-    addRecipe(name: $name
+    $instructions: String!
+    $creator: String!
+  ) {
+    addRecipe(
+      name: $name
       description: $description
       category: $category
-      instructions: $instructions
       imageUrl: $imageUrl
-      username: $username) {
+      instructions: $instructions
+      creator: $creator
+    ) {
       _id
       name
-      category
       description
-      instructions
+      category
       imageUrl
-      likes
-      username    }
+      instructions
+      creator {
+        _id
+        username
+      }
+    }
   }
 `;
 
@@ -81,9 +105,10 @@ export const SIGNUP_USER = gql`
 `;
 
 export const SIGNIN_USER = gql`
-  mutation SigninUser($username: String!, $password: String!) {
-    signinUser(username: $username, password: $password) {
+  mutation SigninUser($email: String!, $password: String!) {
+    signinUser(email: $email, password: $password) {
       token
+      userId
     }
   }
 `;

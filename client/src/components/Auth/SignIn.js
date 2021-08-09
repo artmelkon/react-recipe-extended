@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import { Mutation } from "@apollo/client/react/components";
 
 import FormInput from "../FormInput/FormInput.component";
@@ -8,7 +8,7 @@ import Error from "../Error";
 import { SIGNIN_USER } from "../../queries/index";
 
 const initialState = {
-  username: "",
+  email: "",
   password: "",
 };
 
@@ -28,27 +28,26 @@ class SignIn extends React.Component {
     event.preventDefault();
 
     signinUser().then(async ({ data }) => {
-      console.log('login user ', data);
+      console.log("login user ", data);
       localStorage.setItem("token", data.signinUser.token);
-      await this.props.refetch()
+      await this.props.refetch();
       this.clearState();
-      this.props.history.push('/')
-    })
-
+      this.props.history.push("/");
+    });
   };
 
   validateForm = () => {
-    const { username, password } = this.state;
-    const isInvalid = !username || !password;
+    const { email, password } = this.state;
+    const isInvalid = !email || !password;
     return isInvalid;
   };
 
   render() {
-    const { username, password } = this.state;
+    const { email, password } = this.state;
     return (
       <div className="App">
         <h2 className="App">Sign In</h2>
-        <Mutation mutation={SIGNIN_USER} variables={{ username, password }}>
+        <Mutation mutation={SIGNIN_USER} variables={{ email, password }}>
           {(signinUser, { data, loading, error }) => {
             return (
               <form
@@ -57,8 +56,8 @@ class SignIn extends React.Component {
               >
                 <FormInput
                   type="text"
-                  name="username"
-                  value={username}
+                  name="email"
+                  value={email}
                   placeholder="Username"
                   required
                   onChange={this.handleChange}
