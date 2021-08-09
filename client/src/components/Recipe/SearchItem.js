@@ -1,10 +1,10 @@
 import React from "react";
-import {Link} from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-const SearchItem = ({_id, name, likes}) => {
+const SearchItem = ({ _id, name, likes }) => {
   return (
     <li>
-      <Link to={`/recipes/${_id}`}>
+      <Link to={`/recipe/${_id}`}>
         <h4>{name}</h4>
       </Link>
       <p>Likes: {likes}</p>
