@@ -55,8 +55,8 @@ exports.resolvers = {
       console.log('user ', user);
       return user;
     },
-    getUserRecipes: async (root, { username }, { Recipe }) => {
-      const userRecipes = await Recipe.find({ username });
+    getUserRecipes: async (root, { creator }, { Recipe }) => {
+      const userRecipes = await Recipe.find({ creator }).sort({createdDate: -1});
       return userRecipes;
     },
   },

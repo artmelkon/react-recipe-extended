@@ -39,7 +39,7 @@ exports.typeDefs = gql`
   type RootQuery {
     getUsers: [User!]!
     getCurrentUser: User
-    getUserRecipes(username: String!): [Recipe]
+    getUserRecipes(creator: String!): [Recipe]
     getRecipe(_id: ID!): Recipe!
     getAllRecipes: [Recipe]
     searchRecipes(searchTerm: String): [Recipe]

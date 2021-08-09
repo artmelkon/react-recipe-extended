@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 import UserInfo from './UserInfo';
 import UserRecipes from "./UserRecipes";
 import withAuth from '../Auth/withAuth';
+import classes from './Profile.module.scss';
 
 const Profile = ({session}) => (
-  <div className="App">
+  <div className={classes.profile}>
     <UserInfo session={session} />
-    <UserRecipes username={session.getCurrentUser.username} />
+    <UserRecipes creator={session.getCurrentUser._id} />
   </div>
 )
 

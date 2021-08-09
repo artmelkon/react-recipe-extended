@@ -27,8 +27,8 @@ export const GET_CURRENT_USER = gql`
 `;
 
 export const GET_USER_RECIPES = gql`
-  query GetUserRecipes($username: String!) {
-    getUserRecipes(username: $username) {
+  query GetUserRecipes($creator: String!) {
+    getUserRecipes(creator: $creator) {
       _id
       name
       likes
