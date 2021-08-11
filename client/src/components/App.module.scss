@@ -1,5 +1,16 @@
 .App {
   text-align: center;
+
+  & form {
+    width: 75%;
+    max-width: 25rem;
+    padding: 1rem 1.5rem;
+  }
+
+  & input {
+    display: block;
+    width: 100%;
+  }
 }
 
 nav {
